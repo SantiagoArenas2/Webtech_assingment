@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Roomies — Find your next room</title>
+  <meta name="description" content="Roomies connects people looking for a room with hosts who have one available in their neighborhood." />
+
+  <!-- Bootstrap 5 -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600&family=Work+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+
+  <a class="visually-hidden-focusable skip-link" href="#main-content">Skip to main content</a>
+
+  <!-- NAVBAR -->
+  <header>
+    <nav class="navbar navbar-expand-lg py-3" aria-label="Main navigation">
+      <div class="container">
+        <a class="navbar-brand brand" href="#">Roomies</a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#mainNav"
+          aria-controls="mainNav" aria-expanded="false" aria-label="Open navigation menu">
+          <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="mainNav">
+          <ul class="navbar-nav ms-auto align-items-lg-center gap-lg-2">
+            <li class="nav-item"><a class="nav-link" href="#search">Search</a></li>
+            <li class="nav-item"><a class="nav-link" href="#publish">Publish a room</a></li>
+            <li class="nav-item"><a class="nav-link" href="#login">Log in</a></li>
+            <li class="nav-item ms-lg-2">
+              <a class="btn btn-brand-accent" href="#signup">Sign up</a>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </nav>
+  </header>
+
+  <main id="main-content">
+
+    <!-- HERO -->
+    <section class="hero" aria-labelledby="hero-heading">
+      <div class="container">
+        <div class="row align-items-center gy-5">
+          <div class="col-lg-6">
+            <h1 id="hero-heading">A room that feels like home, in the neighborhood you want.</h1>
+            <p class="hero-sub">Roomies connects people looking for a room with hosts who have one available. No
+              fine print, no strange middlemen: publish or search, apply, visit, and move in.</p>
+            <div class="d-flex flex-wrap gap-3 mt-4">
+              <a href="#search" class="btn btn-brand-primary btn-lg">Find a room</a>
+              <a href="#publish" class="btn btn-brand-outline btn-lg">Publish a room</a>
+            </div>
+          </div>
+          <div class="col-lg-6">
+            <div class="hero-card-wrap">
+              <article class="listing-card hero-listing-card">
+                <img src="https://picsum.photos/id/1080/600/420" class="listing-photo"
+                  alt="Bright room with a single bed, desk, and large window facing a courtyard" />
+                <div class="listing-body">
+                  <p class="listing-neighborhood">Ñuñoa</p>
+                  <div class="d-flex justify-content-between align-items-baseline">
+                    <span class="listing-price">$280,000 / month</span>
+                    <span class="listing-date">Avail. Oct 1</span>
+                  </div>
+                </div>
+              </article>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- SEARCH BLOCK -->
+    <section id="search" class="search-section" aria-labelledby="search-heading">
+      <div class="container">
+        <div class="search-card">
+          <h2 id="search-heading" class="h4 mb-4">Search by neighborhood, rent, and date</h2>
+          <form>
+            <div class="row g-3 align-items-end">
+              <div class="col-md-4">
+                <label for="neighborhood" class="form-label">Neighborhood</label>
+                <select id="neighborhood" name="neighborhood" class="form-select">
+                  <option selected>Any neighborhood</option>
+                  <option>Ñuñoa</option>
+                  <option>Providencia</option>
+                  <option>Independencia</option>
+                  <option>San Miguel</option>
+                  <option>Estación Central</option>
+                </select>
+              </div>
+              <div class="col-md-3">
+                <label for="max-rent" class="form-label">Maximum rent</label>
+                <div class="input-group">
+                  <span class="input-group-text">$</span>
+                  <input type="number" class="form-control" id="max-rent" name="max-rent" placeholder="300,000"
+                    min="0" step="10000" />
+                </div>
+              </div>
+              <div class="col-md-3">
+                <label for="availability" class="form-label">Available from</label>
+                <input type="date" class="form-control" id="availability" name="availability" />
+              </div>
+              <div class="col-md-2">
+                <button type="submit" class="btn btn-brand-primary w-100">Search</button>
+              </div>
+            </div>
+          </form>
+        </div>
+      </div>
+    </section>
+
+    <!-- FEATURED LISTINGS -->
+    <section class="featured-section" aria-labelledby="featured-heading">
+      <div class="container">
+        <div class="d-flex justify-content-between align-items-end mb-4 flex-wrap gap-2">
+          <h2 id="featured-heading">Featured rooms this week</h2>
+          <a href="#search" class="link-brand">View all</a>
+        </div>
+        <div class="row g-4">
+
+          <div class="col-md-4">
+            <article class="listing-card">
+              <img src="https://picsum.photos/id/1078/500/350" class="listing-photo"
+                alt="Room with a double bed, nightstand, and light curtains" />
+              <div class="listing-body">
+                <p class="listing-neighborhood">Providencia</p>
+                <div class="d-flex justify-content-between align-items-baseline">
+                  <span class="listing-price">$320,000 / month</span>
+                  <span class="listing-date">Avail. Sep 15</span>
+                </div>
+              </div>
+            </article>
+          </div>
+
+          <div class="col-md-4">
+            <article class="listing-card">
+              <img src="https://picsum.photos/id/1048/500/350" class="listing-photo"
+                alt="Room with a desk by the window and a bookshelf" />
+              <div class="listing-body">
+                <p class="listing-neighborhood">San Miguel</p>
+                <div class="d-flex justify-content-between align-items-baseline">
+                  <span class="listing-price">$240,000 / month</span>
+                  <span class="listing-date">Avail. Sep 20</span>
+                </div>
+              </div>
+            </article>
+          </div>
+
+          <div class="col-md-4">
+            <article class="listing-card">
+              <img src="https://picsum.photos/id/1082/500/350" class="listing-photo"
+                alt="Furnished room with a wooden closet and a rug" />
+              <div class="listing-body">
+                <p class="listing-neighborhood">Independencia</p>
+                <div class="d-flex justify-content-between align-items-baseline">
+                  <span class="listing-price">$260,000 / month</span>
+                  <span class="listing-date">Avail. Oct 5</span>
+                </div>
+              </div>
+            </article>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+    <!-- HOW IT WORKS -->
+    <section class="how-section" aria-labelledby="how-heading">
+      <div class="container">
+        <h2 id="how-heading" class="mb-5">How it works</h2>
+        <div class="row g-4">
+          <div class="col-md-4">
+            <div class="how-step">
+              <span class="how-step-number" aria-hidden="true">1</span>
+              <h3>Publish or search</h3>
+              <p>Hosts publish their properties and available rooms. Seekers search by neighborhood, price, and
+                availability date.</p>
+            </div>
+          </div>
+          <div class="col-md-4">
+            <div class="how-step">
+              <span class="how-step-number" aria-hidden="true">2</span>
+              <h3>Apply</h3>
+              <p>The seeker applies to the room they're interested in with a message. The host reviews, shortlists,
+                and schedules a visit.</p>
+            </div>
+          </div>
+          <div class="col-md-4">
+            <div class="how-step">
+              <span class="how-step-number" aria-hidden="true">3</span>
+              <h3>Visit and move in</h3>
+              <p>After the visit, the host accepts an applicant. The lease is closed and the seeker moves into their
+                new room.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- FOOTER -->
+  <footer class="site-footer">
+    <div class="container d-flex flex-wrap justify-content-between align-items-center gap-2">
+      <p class="mb-0">Roomies — Team name here</p>
+      <p class="mb-0">Software Engineering Course · 2026</p>
+    </div>
+  </footer>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
