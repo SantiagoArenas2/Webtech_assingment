@@ -9,7 +9,6 @@ Team: Santiago Arenas
 ├── index.html        
 ├── styles.css         
 ├── user-stories.md       
-├── domain-model.dbml      
 ├── design-decisions.md      
 └── README.md
 ```
