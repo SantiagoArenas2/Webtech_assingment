@@ -1,0 +1,239 @@
+:root {
+  --color-bg: #F3F5F1;
+  --color-surface: #FFFFFF;
+  --color-ink: #1B2B29;
+  --color-muted: #5E6D66;
+  --color-primary: #234E44;
+  --color-primary-dark: #16342D;
+  --color-accent: #C98A3E;
+  --color-accent-dark: #A9702E;
+  --radius-card: 14px;
+}
+
+body {
+  background-color: var(--color-bg);
+  color: var(--color-ink);
+  font-family: "Work Sans", system-ui, sans-serif;
+  font-size: 1.05rem;
+  line-height: 1.6;
+}
+
+h1, h2, h3, .brand {
+  font-family: "Fraunces", Georgia, serif;
+  color: var(--color-primary-dark);
+  font-weight: 500;
+}
+
+h1 {
+  font-size: clamp(2.1rem, 4vw, 3rem);
+  line-height: 1.15;
+  max-width: 18ch;
+}
+
+h2 {
+  font-size: clamp(1.5rem, 2.6vw, 2rem);
+}
+
+.skip-link {
+  position: absolute;
+  top: 0.5rem;
+  left: 0.5rem;
+  z-index: 2000;
+  background: var(--color-primary);
+  color: #fff;
+  padding: 0.5rem 1rem;
+  border-radius: 6px;
+}
+
+/* NAVBAR */
+.brand {
+  font-size: 1.4rem;
+  font-weight: 600;
+}
+
+.nav-link {
+  color: var(--color-ink);
+  font-weight: 500;
+}
+
+.nav-link:hover {
+  color: var(--color-primary);
+}
+
+.btn-brand-primary {
+  background-color: var(--color-primary);
+  border-color: var(--color-primary);
+  color: #fff;
+  font-weight: 500;
+}
+
+.btn-brand-primary:hover, .btn-brand-primary:focus {
+  background-color: var(--color-primary-dark);
+  border-color: var(--color-primary-dark);
+  color: #fff;
+}
+
+.btn-brand-outline {
+  background-color: transparent;
+  border: 1.5px solid var(--color-primary);
+  color: var(--color-primary-dark);
+  font-weight: 500;
+}
+
+.btn-brand-outline:hover, .btn-brand-outline:focus {
+  background-color: var(--color-primary);
+  color: #fff;
+}
+
+.btn-brand-accent {
+  background-color: var(--color-accent);
+  border-color: var(--color-accent);
+  color: #1B2B29;
+  font-weight: 600;
+}
+
+.btn-brand-accent:hover, .btn-brand-accent:focus {
+  background-color: var(--color-accent-dark);
+  border-color: var(--color-accent-dark);
+  color: #fff;
+}
+
+.link-brand {
+  color: var(--color-primary-dark);
+  font-weight: 500;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+/* HERO */
+.hero {
+  padding: 4.5rem 0 3.5rem;
+}
+
+.hero-sub {
+  color: var(--color-muted);
+  max-width: 48ch;
+  font-size: 1.1rem;
+}
+
+.hero-card-wrap {
+  display: flex;
+  justify-content: center;
+}
+
+.hero-listing-card {
+  transform: rotate(-2.5deg);
+  max-width: 380px;
+}
+
+/* LISTING CARDS */
+.listing-card {
+  background: var(--color-surface);
+  border-radius: var(--radius-card);
+  overflow: hidden;
+  box-shadow: 0 10px 26px rgba(27, 43, 41, 0.10);
+  height: 100%;
+}
+
+.listing-photo {
+  width: 100%;
+  aspect-ratio: 4 / 3;
+  object-fit: cover;
+  display: block;
+}
+
+.listing-body {
+  padding: 1rem 1.25rem 1.25rem;
+}
+
+.listing-neighborhood {
+  font-weight: 600;
+  margin-bottom: 0.25rem;
+}
+
+.listing-price {
+  font-weight: 600;
+  color: var(--color-primary-dark);
+}
+
+.listing-date {
+  color: var(--color-muted);
+  font-size: 0.9rem;
+}
+
+/* SEARCH */
+.search-section {
+  padding: 1rem 0 3.5rem;
+}
+
+.search-card {
+  background: var(--color-surface);
+  border-radius: var(--radius-card);
+  padding: 2rem;
+  box-shadow: 0 10px 26px rgba(27, 43, 41, 0.08);
+}
+
+/* FEATURED */
+.featured-section {
+  padding: 1rem 0 4rem;
+}
+
+/* HOW IT WORKS */
+.how-section {
+  background-color: #EAEFE9;
+  padding: 4rem 0 4.5rem;
+}
+
+.how-step {
+  height: 100%;
+}
+
+.how-step-number {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.25rem;
+  height: 2.25rem;
+  border-radius: 50%;
+  background: var(--color-primary);
+  color: #fff;
+  font-family: "Fraunces", serif;
+  font-weight: 500;
+  margin-bottom: 0.9rem;
+}
+
+.how-step h3 {
+  font-size: 1.2rem;
+  margin-bottom: 0.5rem;
+}
+
+.how-step p {
+  color: var(--color-muted);
+}
+
+/* FOOTER */
+.site-footer {
+  background-color: var(--color-primary-dark);
+  color: #E7ECE9;
+  padding: 1.75rem 0;
+  font-size: 0.95rem;
+}
+
+/* RESPONSIVE */
+@media (max-width: 991.98px) {
+  .hero {
+    padding: 3rem 0 2.5rem;
+  }
+  .hero-card-wrap {
+    margin-top: 1rem;
+  }
+  .hero-listing-card {
+    transform: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  * {
+    transition: none !important;
+  }
+}
