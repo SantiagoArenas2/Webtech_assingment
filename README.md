@@ -26,6 +26,9 @@ Assignment 2 (Rails application, models, and read-only views).
 ```
 
 ## Domain model
+<img width="1440" height="720" alt="dbmodelo" src="https://github.com/user-attachments/assets/6db0a5ec-2a25-428c-bfe8-d0ed9e40dd02" />
+
+
 
 ## Running the Rails app
 
