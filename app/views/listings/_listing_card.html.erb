@@ -1,0 +1,18 @@
+<%
+  photo = room.room_photos.first
+  card_class = ["listing-card", local_assigns[:extra_class]].compact.join(" ")
+%>
+<article class="<%= card_class %>">
+  <% if photo %>
+    <%= image_tag photo.url, class: "listing-photo",
+          alt: "Photo of #{room.label} in #{room.property.neighborhood.name}" %>
+  <% end %>
+  <div class="listing-body">
+    <p class="listing-neighborhood"><%= room.property.neighborhood.name %></p>
+    <div class="d-flex justify-content-between align-items-baseline">
+      <span class="listing-price"><%= number_to_currency(room.price, precision: 0) %> / month</span>
+      <span class="listing-date">Avail. <%= room.available_from.strftime("%b %-d") %></span>
+    </div>
+    <%= link_to "View details", listing_path(room), class: "stretched-link link-brand" %>
+  </div>
+</article>

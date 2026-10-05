@@ -1,17 +1,24 @@
-#Romies
-##
-Team: Santiago Arenas
+# README
 
-## Repository structure
- 
-```
-.
-├── index.html        
-├── styles.css         
-├── user-stories.md       
-├── design-decisions.md      
-└── README.md
-```
+This README would normally document whatever steps are necessary to get the
+application up and running.
 
+Things you may want to cover:
 
-<img width="1440" height="720" alt="image" src="https://github.com/user-attachments/assets/6c69c430-69cb-4944-9773-631cae981ced" />
+* Ruby version
+
+* System dependencies
+
+* Configuration
+
+* Database creation
+
+* Database initialization
+
+* How to run the test suite
+
+* Services (job queues, cache servers, search engines, etc.)
+
+* Deployment instructions
+
+* ...

@@ -1,0 +1,105 @@
+<section class="hero" aria-labelledby="hero-heading">
+  <div class="container">
+    <div class="row align-items-center gy-5">
+      <div class="col-lg-6">
+        <h1 id="hero-heading">A room that feels like home, in the neighborhood you want.</h1>
+        <p class="hero-sub">Roomies connects people looking for a room with hosts who have one available.
+          Publish or search, apply, visit, and move in.</p>
+        <div class="d-flex flex-wrap gap-3 mt-4">
+          <%= link_to "Find a room", listings_path, class: "btn btn-brand-primary btn-lg" %>
+          <%= link_to "Browse properties", properties_path, class: "btn btn-brand-outline btn-lg" %>
+        </div>
+      </div>
+      <div class="col-lg-6">
+        <% if @featured_rooms.any? %>
+          <div class="hero-card-wrap">
+            <%= render "listings/listing_card", room: @featured_rooms.first, extra_class: "hero-listing-card" %>
+          </div>
+        <% end %>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="search" class="search-section" aria-labelledby="search-heading">
+  <div class="container">
+    <div class="search-card">
+      <h2 id="search-heading" class="h4 mb-4">Search by neighborhood, rent, and date</h2>
+      <%= form_with url: listings_path, method: :get, local: true do %>
+        <div class="row g-3 align-items-end">
+          <div class="col-md-4">
+            <label for="neighborhood_id" class="form-label">Neighborhood</label>
+            <select name="neighborhood_id" id="neighborhood_id" class="form-select">
+              <option value="">Any neighborhood</option>
+              <% Neighborhood.order(:name).each do |n| %>
+                <option value="<%= n.id %>"><%= n.name %></option>
+              <% end %>
+            </select>
+          </div>
+          <div class="col-md-3">
+            <label for="max_rent" class="form-label">Maximum rent</label>
+            <div class="input-group">
+              <span class="input-group-text">$</span>
+              <%= number_field_tag :max_rent, nil, class: "form-control", placeholder: "300000" %>
+            </div>
+          </div>
+          <div class="col-md-3">
+            <label for="available_from" class="form-label">Available from</label>
+            <%= date_field_tag :available_from, nil, class: "form-control" %>
+          </div>
+          <div class="col-md-2">
+            <button type="submit" class="btn btn-brand-primary w-100">Search</button>
+          </div>
+        </div>
+      <% end %>
+    </div>
+  </div>
+</section>
+
+<section class="featured-section" aria-labelledby="featured-heading">
+  <div class="container">
+    <div class="d-flex justify-content-between align-items-end mb-4 flex-wrap gap-2">
+      <h2 id="featured-heading">Featured rooms this week</h2>
+      <%= link_to "View all", listings_path, class: "link-brand" %>
+    </div>
+    <div class="row g-4">
+      <% @featured_rooms.each do |room| %>
+        <div class="col-md-4">
+          <%= render "listings/listing_card", room: room %>
+        </div>
+      <% end %>
+    </div>
+  </div>
+</section>
+
+<section class="how-section" aria-labelledby="how-heading">
+  <div class="container">
+    <h2 id="how-heading" class="mb-5">How it works</h2>
+    <div class="row g-4">
+      <div class="col-md-4">
+        <div class="how-step">
+          <span class="how-step-number" aria-hidden="true">1</span>
+          <h3>Publish or search</h3>
+          <p>Hosts publish their properties and available rooms. Seekers search by neighborhood, price, and
+            availability date.</p>
+        </div>
+      </div>
+      <div class="col-md-4">
+        <div class="how-step">
+          <span class="how-step-number" aria-hidden="true">2</span>
+          <h3>Apply</h3>
+          <p>The seeker applies to the room they're interested in with a message. The host reviews, shortlists,
+            and schedules a visit.</p>
+        </div>
+      </div>
+      <div class="col-md-4">
+        <div class="how-step">
+          <span class="how-step-number" aria-hidden="true">3</span>
+          <h3>Visit and move in</h3>
+          <p>After the visit, the host accepts an applicant. The lease is closed and the seeker moves into their
+            new room.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>

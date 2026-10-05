@@ -1,0 +1,15 @@
+<div class="container py-5">
+  <h1 class="mb-4">Application #<%= @application.id %></h1>
+  <p><strong>Seeker:</strong> <%= @application.seeker.name %></p>
+  <p><strong>Room:</strong> <%= link_to @application.room.label, listing_path(@application.room) %></p>
+  <p><strong>Status:</strong> <span class="badge bg-secondary"><%= @application.status.humanize %></span></p>
+  <p><strong>Message:</strong> <%= @application.message %></p>
+
+  <% if @application.visit %>
+    <h2 class="h5 mt-4">Visit</h2>
+    <p>
+      <%= @application.visit.scheduled_at.strftime("%B %-d, %Y %H:%M") %>
+      — <%= @application.visit.status.humanize %>
+    </p>
+  <% end %>
+</div>

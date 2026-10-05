@@ -1,0 +1,33 @@
+<div class="container py-5">
+  <h1><%= @property.address %></h1>
+  <p class="text-muted"><%= @property.neighborhood.name %></p>
+  <p><%= @property.description %></p>
+
+  <h2 class="h4 mt-4">Amenities</h2>
+  <ul class="list-inline">
+    <% @property.amenities.each do |amenity| %>
+      <li class="list-inline-item badge bg-light text-dark border"><%= amenity.name %></li>
+    <% end %>
+  </ul>
+
+  <h2 class="h4 mt-5">Rooms in this property</h2>
+  <div class="row g-4">
+    <% @property.rooms.each do |room| %>
+      <div class="col-md-4">
+        <%= render "listings/listing_card", room: room %>
+      </div>
+    <% end %>
+  </div>
+
+  <h2 class="h4 mt-5">Reviews</h2>
+  <% if @property.reviews.any? %>
+    <% @property.reviews.each do |review| %>
+      <div class="border-bottom py-2">
+        <strong><%= review.rating %>/5</strong> — <%= review.author.name %>
+        <p class="mb-0"><%= review.comment %></p>
+      </div>
+    <% end %>
+  <% else %>
+    <p class="text-muted">No reviews yet.</p>
+  <% end %>
+</div>

@@ -39,3 +39,14 @@ separate "closed" entity, since no new information needs to be recorded beyond t
   time the review is written.
 - We assumed one `visit` can be scheduled per `application` at a time (not simultaneous visits), but a new visit
   row can be created if the previous one is cancelled and rescheduled.
+
+## Assignment 2 updates to the domain model
+
+- Added `deposit` and `minimum_stay_months` to `rooms`. Assignment 2 explicitly requires numerical validations on
+  deposit and minimum stay, and the Assignment 1 model didn't carry those attributes yet.
+- Gave `property_amenities` and `saved_listings` their own surrogate `id` primary key instead of a composite one.
+  Rails' conventions (and most of its generators) assume a single-column primary key per table; a composite PK
+  would have meant working against the framework for no real benefit, since the uniqueness constraint on the pair
+  is still enforced via a unique index.
+- Renamed `reports.resolved_by` to `reports.resolver_id`, to match the `_id` suffix Rails expects for a
+  `belongs_to :resolver` association.
