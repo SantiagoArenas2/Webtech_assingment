@@ -104,11 +104,11 @@ room_d1 = Room.create!(
 
 puts "Creating room photos..."
 {
-  room_a1 => ["https://picsum.photos/id/1080/600/420", "https://picsum.photos/id/1081/600/420"],
-  room_a2 => ["https://picsum.photos/id/1082/600/420"],
-  room_b1 => ["https://picsum.photos/id/1078/600/420"],
-  room_c1 => ["https://picsum.photos/id/1048/600/420"],
-  room_d1 => ["https://picsum.photos/id/1074/600/420"]
+  room_a1 => ["https://placehold.co/600x420/234E44/FFFFFF?text=Room+1+%E2%80%94+%C3%91u%C3%B1oa"],
+  room_a2 => ["https://placehold.co/600x420/234E44/FFFFFF?text=Room+2+%E2%80%94+%C3%91u%C3%B1oa"],
+  room_b1 => ["https://placehold.co/600x420/234E44/FFFFFF?text=Main+Bedroom+%E2%80%94+Providencia"],
+  room_c1 => ["https://placehold.co/600x420/234E44/FFFFFF?text=Street+Room+%E2%80%94+San+Miguel"],
+  room_d1 => ["https://placehold.co/600x420/234E44/FFFFFF?text=Studio+Room+%E2%80%94+Independencia"]
 }.each do |room, urls|
   urls.each_with_index { |url, i| RoomPhoto.create!(room: room, url: url, sort_order: i) }
 end
