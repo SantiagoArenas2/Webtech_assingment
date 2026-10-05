@@ -1,24 +1,49 @@
-# README
+# Roomies
 
-This README would normally document whatever steps are necessary to get the
-application up and running.
+Room rental platform — Assignment 1 (user stories, domain model, landing page) and
+Assignment 2 (Rails application, models, and read-only views).
 
-Things you may want to cover:
+## Team
 
-* Ruby version
+- Santiago Arenas
 
-* System dependencies
+## Repository structure
 
-* Configuration
+```
+.
+├── index.html
+├── styles.css
+├── user-stories.md
+├── domain-model.dbml
+├── design-decisions.md
+├── app/
+├── db/
+│   ├── migrate/
+│   └── seeds.rb
+├── config/
+│   └── routes.rb
+└── README.md
+```
 
-* Database creation
+## Domain model
 
-* Database initialization
+## Running the Rails app
 
-* How to run the test suite
+This app uses Rails 8, PostgreSQL, and Bootstrap via `cssbundling-rails`.
 
-* Services (job queues, cache servers, search engines, etc.)
+To set it up locally:
 
-* Deployment instructions
+```
+bundle install
+bin/rails db:create
+bin/rails db:migrate
+bin/rails db:seed
+bin/dev
+```
 
-* ...
+`bin/dev` starts both the Rails server and the CSS build watcher — the app will not look right if you
+start it with `bin/rails server` alone. Visit `http://localhost:3000` once it's running.
+
+## Course
+
+Web Technologies — 2026
