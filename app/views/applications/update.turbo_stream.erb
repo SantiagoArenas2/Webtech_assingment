@@ -1,0 +1,7 @@
+<%= turbo_stream.update "applications_rows" do %>
+  <% @applications.each do |application| %>
+    <%= render "application_row", application: application %>
+  <% end %>
+<% end %>
+<%= turbo_stream.replace "pending_count", @pending_count.to_s %>
+<%= turbo_stream.replace "flash_messages", partial: "layouts/flash_messages", locals: { messages: flash } %>

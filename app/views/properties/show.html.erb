@@ -2,6 +2,15 @@
   <h1><%= @property.address %></h1>
   <p class="text-muted"><%= @property.neighborhood.name %></p>
   <p><%= @property.description %></p>
+  <p><strong><%= @property.property_type.humanize %></strong> · <%= pluralize(@property.bedrooms, "bedroom") %> · <%= pluralize(@property.bathrooms, "bathroom") %></p>
+  <p>Shared spaces: <%= @property.shared_spaces.presence || "Not specified" %></p>
+  <% if current_user&.id == @property.host_id %>
+    <div class="d-flex gap-2">
+      <%= link_to "Edit property", edit_property_path(@property), class: "btn btn-outline-primary" %>
+      <%= link_to "Add listing", new_property_listing_path(@property), class: "btn btn-primary" %>
+      <%= button_to "Delete property", property_path(@property), method: :delete, class: "btn btn-outline-danger" %>
+    </div>
+  <% end %>
 
   <h2 class="h4 mt-4">Amenities</h2>
   <ul class="list-inline">
@@ -12,10 +21,15 @@
 
   <h2 class="h4 mt-5">Rooms in this property</h2>
   <div class="row g-4">
-    <% @property.rooms.each do |room| %>
+    <% @rooms.each do |room| %>
       <div class="col-md-4">
         <%= render "listings/listing_card", room: room %>
       </div>
+    <% end %>
+
+    <% if @completed_visits.any? %>
+      <h2 class="h4 mt-5">Write a review</h2>
+      <%= render "reviews/form", property: @property, review: @review, visits: @completed_visits %>
     <% end %>
   </div>
 
@@ -25,6 +39,10 @@
       <div class="border-bottom py-2">
         <strong><%= review.rating %>/5</strong> — <%= review.author.name %>
         <p class="mb-0"><%= review.comment %></p>
+        <% if current_user&.id == review.author_id %>
+          <%= link_to "Edit review", edit_property_review_path(@property, review), class: "btn btn-sm btn-outline-primary" %>
+          <%= button_to "Delete review", property_review_path(@property, review), method: :delete, class: "btn btn-sm btn-outline-danger" %>
+        <% end %>
       </div>
     <% end %>
   <% else %>

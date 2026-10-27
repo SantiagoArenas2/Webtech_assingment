@@ -1,0 +1,37 @@
+<%= turbo_frame_tag "application_block" do %>
+  <section class="card p-3 mt-4">
+    <% if application %>
+      <h2 class="h5">Your application</h2>
+      <p>Status: <strong><%= application.status.humanize %></strong></p>
+      <% if application.pending? || application.shortlisted? %>
+        <%= button_to "Withdraw application", withdraw_application_path(application), method: :patch,
+                      class: "btn btn-outline-danger" %>
+      <% end %>
+    <% elsif current_user && current_user.id != room.property.host_id && room.published? %>
+      <h2 class="h5">Apply for this room</h2>
+      <%= form_with model: new_application, url: listing_applications_path(room) do |form| %>
+        <% new_application.errors.each do |error| %>
+          <p class="text-danger"><%= error.full_message %></p>
+        <% end %>
+        <div class="mb-3">
+          <%= form.label :message, class: "form-label" %>
+          <%= form.text_area :message, class: "form-control", required: true, placeholder: "Introduce yourself to the host" %>
+          <% new_application.errors.full_messages_for(:message).each do |message| %><div class="text-danger"><%= message %></div><% end %>
+        </div>
+        <div class="mb-3">
+          <%= form.label :move_in_date, class: "form-label" %>
+          <%= form.date_field :move_in_date, class: "form-control", required: true, min: Date.current %>
+          <% new_application.errors.full_messages_for(:move_in_date).each do |message| %><div class="text-danger"><%= message %></div><% end %>
+        </div>
+        <div class="mb-3">
+          <%= form.label :intended_stay_months, "Intended stay (months)", class: "form-label" %>
+          <%= form.number_field :intended_stay_months, class: "form-control", min: 1, required: true %>
+          <% new_application.errors.full_messages_for(:intended_stay_months).each do |message| %><div class="text-danger"><%= message %></div><% end %>
+        </div>
+        <%= form.submit "Apply", class: "btn btn-primary" %>
+      <% end %>
+    <% elsif room.published? %>
+      <p>Select an acting user to apply.</p>
+    <% end %>
+  </section>
+<% end %>

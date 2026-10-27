@@ -1,0 +1,23 @@
+<%= form_with model: room, url: room.persisted? ? listing_path(room) : property_listings_path(property),
+              method: room.persisted? ? :patch : :post do |form| %>
+  <% if room.errors.any? %>
+    <div class="alert alert-danger"><%= room.errors.full_messages.to_sentence %></div>
+  <% end %>
+  <div class="mb-3">
+    <%= form.label :label, "Listing title", class: "form-label" %>
+    <%= form.text_field :label, class: "form-control", required: true, placeholder: "Bright room near the metro" %>
+    <% room.errors.full_messages_for(:label).each do |message| %><div class="text-danger"><%= message %></div><% end %>
+  </div>
+  <div class="row">
+    <div class="col-md-4 mb-3"><%= form.label :price, "Monthly rent", class: "form-label" %><%= form.number_field :price, min: 1, required: true, class: "form-control" %><% room.errors.full_messages_for(:price).each do |message| %><div class="text-danger"><%= message %></div><% end %></div>
+    <div class="col-md-4 mb-3"><%= form.label :deposit, class: "form-label" %><%= form.number_field :deposit, min: 0, class: "form-control" %><% room.errors.full_messages_for(:deposit).each do |message| %><div class="text-danger"><%= message %></div><% end %></div>
+    <div class="col-md-4 mb-3"><%= form.label :minimum_stay_months, "Minimum stay (months)", class: "form-label" %><%= form.number_field :minimum_stay_months, min: 1, class: "form-control" %><% room.errors.full_messages_for(:minimum_stay_months).each do |message| %><div class="text-danger"><%= message %></div><% end %></div>
+  </div>
+  <div class="mb-3"><%= form.label :available_from, "Availability date", class: "form-label" %><%= form.date_field :available_from, min: Date.current, required: true, class: "form-control" %><% room.errors.full_messages_for(:available_from).each do |message| %><div class="text-danger"><%= message %></div><% end %></div>
+  <div class="form-check mb-2"><%= form.check_box :furnished, class: "form-check-input" %><%= form.label :furnished, class: "form-check-label" %></div>
+  <div class="form-check mb-3"><%= form.check_box :private_bathroom, class: "form-check-input" %><%= form.label :private_bathroom, class: "form-check-label" %></div>
+  <div class="mb-3"><%= form.label :description, class: "form-label" %><%= form.rich_text_area :description %><% room.errors.full_messages_for(:description).each do |message| %><div class="text-danger"><%= message %></div><% end %></div>
+  <div class="mb-3"><%= form.label :house_rules, class: "form-label" %><%= form.rich_text_area :house_rules %><% room.errors.full_messages_for(:house_rules).each do |message| %><div class="text-danger"><%= message %></div><% end %></div>
+  <div class="mb-3"><%= form.label :photographs, "Photographs (images, max 10 MB each)", class: "form-label" %><%= form.file_field :photographs, multiple: true, accept: "image/png,image/jpeg,image/webp,image/gif", class: "form-control" %><% room.errors.full_messages_for(:photographs).each do |message| %><div class="text-danger"><%= message %></div><% end %></div>
+  <%= form.submit class: "btn btn-primary" %>
+<% end %>

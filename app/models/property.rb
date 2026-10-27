@@ -9,6 +9,9 @@ class Property < ApplicationRecord
 
   validates :address, presence: true
   validates :description, presence: true
+  validates :property_type, presence: true
+  validates :bedrooms, numericality: { only_integer: true, greater_than: 0 }
+  validates :bathrooms, numericality: { only_integer: true, greater_than: 0 }
 
   scope :in_neighborhood, ->(neighborhood_id) { where(neighborhood_id: neighborhood_id) }
 end

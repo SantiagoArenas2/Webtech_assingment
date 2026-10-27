@@ -1,0 +1,3 @@
+<%= turbo_stream.replace "application_block", partial: "listings/application_block",
+      locals: { room: @room, application: @application, new_application: @new_application } %>
+<%= turbo_stream.replace "flash_messages", partial: "layouts/flash_messages", locals: { messages: flash } %>

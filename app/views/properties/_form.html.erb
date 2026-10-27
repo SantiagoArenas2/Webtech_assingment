@@ -1,0 +1,14 @@
+<%= form_with model: property do |form| %>
+  <% if property.errors.any? %><div class="alert alert-danger"><%= property.errors.full_messages.to_sentence %></div><% end %>
+  <div class="mb-3"><%= form.label :address, class: "form-label" %><%= form.text_field :address, required: true, class: "form-control", placeholder: "Street address" %><% property.errors.full_messages_for(:address).each do |message| %><div class="text-danger"><%= message %></div><% end %></div>
+  <div class="mb-3"><%= form.label :neighborhood_id, "Neighborhood", class: "form-label" %><%= form.collection_select :neighborhood_id, Neighborhood.order(:name), :id, :name, { prompt: "Choose a neighborhood" }, required: true, class: "form-select" %><% property.errors.full_messages_for(:neighborhood).each do |message| %><div class="text-danger"><%= message %></div><% end %></div>
+  <div class="mb-3"><%= form.label :property_type, "Property type", class: "form-label" %><%= form.select :property_type, [["House", "house"], ["Apartment", "apartment"], ["Studio", "studio"]], { prompt: "Choose a type" }, required: true, class: "form-select" %><% property.errors.full_messages_for(:property_type).each do |message| %><div class="text-danger"><%= message %></div><% end %></div>
+  <div class="row">
+    <div class="col-md-6 mb-3"><%= form.label :bedrooms, class: "form-label" %><%= form.number_field :bedrooms, min: 1, required: true, class: "form-control" %><% property.errors.full_messages_for(:bedrooms).each do |message| %><div class="text-danger"><%= message %></div><% end %></div>
+    <div class="col-md-6 mb-3"><%= form.label :bathrooms, class: "form-label" %><%= form.number_field :bathrooms, min: 1, required: true, class: "form-control" %><% property.errors.full_messages_for(:bathrooms).each do |message| %><div class="text-danger"><%= message %></div><% end %></div>
+  </div>
+  <div class="mb-3"><%= form.label :shared_spaces, class: "form-label" %><%= form.text_area :shared_spaces, class: "form-control", placeholder: "Kitchen, living room, patio..." %></div>
+  <div class="mb-3"><%= form.label :description, class: "form-label" %><%= form.text_area :description, required: true, class: "form-control" %><% property.errors.full_messages_for(:description).each do |message| %><div class="text-danger"><%= message %></div><% end %></div>
+  <fieldset class="mb-3"><legend class="fs-6">Amenities</legend><%= form.collection_check_boxes :amenity_ids, Amenity.order(:name), :id, :name do |box| %><div class="form-check"><%= box.check_box class: "form-check-input" %><%= box.label class: "form-check-label" %></div><% end %></fieldset>
+  <%= form.submit class: "btn btn-primary" %>
+<% end %>

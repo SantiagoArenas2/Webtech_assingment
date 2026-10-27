@@ -1,9 +1,13 @@
 <%
   photo = room.room_photos.first
+  attached_photo = room.photographs.first
   card_class = ["listing-card", local_assigns[:extra_class]].compact.join(" ")
 %>
 <article class="<%= card_class %>">
-  <% if photo %>
+  <% if attached_photo %>
+    <%= image_tag attached_photo.variant(resize_to_limit: [480, 320]), class: "listing-photo",
+          alt: "Photo of #{room.label} in #{room.property.neighborhood.name}" %>
+  <% elsif photo %>
     <%= image_tag photo.url, class: "listing-photo",
           alt: "Photo of #{room.label} in #{room.property.neighborhood.name}" %>
   <% end %>

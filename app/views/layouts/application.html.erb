@@ -23,6 +23,29 @@
   </head>
 
   <body>
-    <%= yield %>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+      <div class="container">
+        <%= link_to "Roomies", root_path, class: "navbar-brand" %>
+        <div class="navbar-nav flex-row flex-wrap gap-3">
+          <%= link_to "Listings", listings_path, class: "nav-link" %>
+          <%= link_to "Properties", properties_path, class: "nav-link" %>
+          <%= link_to "Applications", applications_path, class: "nav-link" %>
+          <%= link_to "Neighborhoods", neighborhoods_path, class: "nav-link" %>
+          <%= link_to "Amenities", amenities_path, class: "nav-link" %>
+        </div>
+        <% if User.exists? %>
+          <%= form_with url: acting_as_path, method: :get, class: "ms-auto d-flex align-items-center gap-2" do %>
+            <label for="acting_user" class="text-white">Acting as</label>
+            <%= select_tag :user_id, options_from_collection_for_select(User.order(:name), :id, :name, current_user&.id),
+                           id: "acting_user", class: "form-select form-select-sm" %>
+            <%= submit_tag "Switch", class: "btn btn-sm btn-light" %>
+          <% end %>
+        <% end %>
+      </div>
+    </nav>
+    <main>
+      <%= render "layouts/flash_messages", messages: flash %>
+      <%= yield %>
+    </main>
   </body>
 </html>

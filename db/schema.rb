@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2026_10_01_000012) do
+ActiveRecord::Schema[8.0].define(version: 2026_10_01_000013) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -21,15 +21,56 @@ ActiveRecord::Schema[8.0].define(version: 2026_10_01_000012) do
     t.index ["name"], name: "index_amenities_on_name", unique: true
   end
 
+  create_table "action_text_rich_texts", force: :cascade do |t|
+    t.string "name", null: false
+    t.text "body"
+    t.string "record_type", null: false
+    t.bigint "record_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["record_type", "record_id", "name"], name: "index_action_text_rich_texts_uniqueness", unique: true
+  end
+
+  create_table "active_storage_attachments", force: :cascade do |t|
+    t.string "name", null: false
+    t.string "record_type", null: false
+    t.bigint "record_id", null: false
+    t.bigint "blob_id", null: false
+    t.datetime "created_at", null: false
+    t.index ["blob_id"], name: "index_active_storage_attachments_on_blob_id"
+    t.index ["record_type", "record_id", "name", "blob_id"], name: "index_active_storage_attachments_uniqueness", unique: true
+  end
+
+  create_table "active_storage_blobs", force: :cascade do |t|
+    t.string "key", null: false
+    t.string "filename", null: false
+    t.string "content_type"
+    t.text "metadata"
+    t.string "service_name", null: false
+    t.bigint "byte_size", null: false
+    t.string "checksum"
+    t.datetime "created_at", null: false
+    t.index ["key"], name: "index_active_storage_blobs_on_key", unique: true
+  end
+
+  create_table "active_storage_variant_records", force: :cascade do |t|
+    t.bigint "blob_id", null: false
+    t.string "variation_digest", null: false
+    t.index ["blob_id", "variation_digest"], name: "index_active_storage_variant_records_uniqueness", unique: true
+  end
+
   create_table "applications", force: :cascade do |t|
     t.bigint "room_id", null: false
     t.bigint "seeker_id", null: false
     t.text "message", null: false
-    t.string "status", default: "submitted", null: false
+    t.string "status", default: "pending", null: false
+    t.date "move_in_date", null: false
+    t.integer "intended_stay_months", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["room_id", "seeker_id"], name: "index_applications_on_room_id_and_seeker_id", unique: true
     t.index ["room_id"], name: "index_applications_on_room_id"
+    t.index ["room_id"], name: "index_applications_one_accepted_per_room", unique: true, where: "(status)::text = 'accepted'::text"
     t.index ["seeker_id"], name: "index_applications_on_seeker_id"
   end
 
@@ -45,6 +86,10 @@ ActiveRecord::Schema[8.0].define(version: 2026_10_01_000012) do
     t.bigint "neighborhood_id", null: false
     t.string "address", null: false
     t.text "description"
+    t.string "property_type", default: "house", null: false
+    t.integer "bedrooms", default: 1, null: false
+    t.integer "bathrooms", default: 1, null: false
+    t.text "shared_spaces"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["host_id"], name: "index_properties_on_host_id"
@@ -80,10 +125,12 @@ ActiveRecord::Schema[8.0].define(version: 2026_10_01_000012) do
     t.bigint "author_id", null: false
     t.integer "rating", null: false
     t.text "comment"
+    t.bigint "visit_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["author_id"], name: "index_reviews_on_author_id"
     t.index ["property_id"], name: "index_reviews_on_property_id"
+    t.index ["visit_id"], name: "index_reviews_on_visit_id", unique: true
   end
 
   create_table "room_photos", force: :cascade do |t|
@@ -102,8 +149,9 @@ ActiveRecord::Schema[8.0].define(version: 2026_10_01_000012) do
     t.integer "deposit"
     t.integer "minimum_stay_months"
     t.date "available_from", null: false
-    t.string "status", default: "available", null: false
-    t.text "description"
+    t.string "status", default: "draft", null: false
+    t.boolean "furnished", default: false, null: false
+    t.boolean "private_bathroom", default: false, null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["property_id"], name: "index_rooms_on_property_id"
@@ -132,14 +180,16 @@ ActiveRecord::Schema[8.0].define(version: 2026_10_01_000012) do
   create_table "visits", force: :cascade do |t|
     t.bigint "application_id", null: false
     t.datetime "scheduled_at", null: false
-    t.string "status", default: "scheduled", null: false
+    t.string "status", default: "proposed", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.index ["application_id"], name: "index_visits_on_application_id"
+    t.index ["application_id"], name: "index_visits_on_application_id", unique: true
   end
 
   add_foreign_key "applications", "rooms"
   add_foreign_key "applications", "users", column: "seeker_id"
+  add_foreign_key "active_storage_attachments", "active_storage_blobs", column: "blob_id"
+  add_foreign_key "active_storage_variant_records", "active_storage_blobs", column: "blob_id"
   add_foreign_key "properties", "neighborhoods"
   add_foreign_key "properties", "users", column: "host_id"
   add_foreign_key "property_amenities", "amenities"
@@ -149,6 +199,7 @@ ActiveRecord::Schema[8.0].define(version: 2026_10_01_000012) do
   add_foreign_key "reports", "users", column: "resolver_id"
   add_foreign_key "reviews", "properties"
   add_foreign_key "reviews", "users", column: "author_id"
+  add_foreign_key "reviews", "visits"
   add_foreign_key "room_photos", "rooms"
   add_foreign_key "rooms", "properties"
   add_foreign_key "saved_listings", "rooms"

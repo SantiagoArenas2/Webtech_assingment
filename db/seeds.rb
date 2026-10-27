@@ -1,5 +1,5 @@
 puts "Clearing existing data..."
-[Report, SavedListing, Visit, Application, Review, RoomPhoto, Room,
+[Report, SavedListing, Review, Visit, Application, RoomPhoto, Room,
  PropertyAmenity, Property, Amenity, Neighborhood, User].each(&:delete_all)
 
 puts "Creating neighborhoods..."
@@ -73,12 +73,12 @@ property_d = Property.create!(
 puts "Creating rooms..."
 room_a1 = Room.create!(
   property: property_a, label: "Room 1 — upstairs", price: 280_000, deposit: 280_000,
-  minimum_stay_months: 6, available_from: Date.current + 5.days, status: "available",
+  minimum_stay_months: 6, available_from: Date.current + 5.days, status: "published",
   description: "Pieza individual con escritorio, ventana hacia el patio."
 )
 room_a2 = Room.create!(
   property: property_a, label: "Room 2 — ground floor", price: 250_000, deposit: 250_000,
-  minimum_stay_months: 3, available_from: Date.current + 20.days, status: "available",
+  minimum_stay_months: 3, available_from: Date.current + 20.days, status: "published",
   description: "Pieza más pequeña, acceso directo al living compartido."
 )
 room_b1 = Room.create!(
@@ -88,19 +88,21 @@ room_b1 = Room.create!(
 )
 room_c1 = Room.create!(
   property: property_c, label: "Room facing the street", price: 230_000, deposit: 230_000,
-  minimum_stay_months: 3, available_from: Date.current + 10.days, status: "available",
+  minimum_stay_months: 3, available_from: Date.current + 10.days, status: "published",
   description: "Pieza amoblada con cama de plaza y media y clóset."
 )
 room_c2 = Room.create!(
   property: property_c, label: "Back room", price: 210_000, deposit: 210_000,
-  minimum_stay_months: 3, available_from: Date.current + 15.days, status: "inactive",
+  minimum_stay_months: 3, available_from: Date.current + 15.days, status: "withdrawn",
   description: "Pieza en remodelación, vuelve a estar disponible el próximo mes."
 )
 room_d1 = Room.create!(
   property: property_d, label: "Studio room", price: 260_000, deposit: 260_000,
-  minimum_stay_months: 6, available_from: Date.current + 1.day, status: "available",
+  minimum_stay_months: 6, available_from: Date.current + 1.day, status: "published",
   description: "Pieza con calefacción central, ideal para quien estudia hasta tarde."
 )
+[room_a1, room_a2, room_b1, room_c1, room_c2, room_d1].each(&:publish!)
+room_c2.withdraw!
 
 puts "Creating room photos..."
 {
@@ -114,24 +116,29 @@ puts "Creating room photos..."
 end
 
 puts "Creating applications (competing applicants, every status)..."
-app_1 = Application.create!(room: room_a1, seeker: valentina, message: "Hola! Me interesa mucho la pieza, soy estudiante de ingeniería y busco algo tranquilo.", status: "shortlisted")
-app_2 = Application.create!(room: room_a1, seeker: diego, message: "Buenas, vivo cerca y necesito mudarme pronto, ¿podríamos coordinar una visita?", status: "submitted")
+app_1 = Application.create!(room: room_a1, seeker: valentina, message: "Hola! Me interesa mucho la pieza, soy estudiante de ingeniería y busco algo tranquilo.", move_in_date: Date.current + 5.days, intended_stay_months: 6, status: "pending")
+app_1.update!(status: :shortlisted)
+app_2 = Application.create!(room: room_a1, seeker: diego, message: "Buenas, vivo cerca y necesito mudarme pronto, ¿podríamos coordinar una visita?", move_in_date: Date.current + 5.days, intended_stay_months: 3, status: "pending")
 
-app_3 = Application.create!(room: room_b1, seeker: martina, message: "Hola, me encantó el depa, quedo atenta.", status: "accepted")
-app_4 = Application.create!(room: room_b1, seeker: benjamin, message: "Hola, también estoy interesado si no resulta con el otro postulante.", status: "rejected")
+app_3 = Application.create!(room: room_b1, seeker: martina, message: "Hola, me encantó el depa, quedo atenta.", move_in_date: Date.current, intended_stay_months: 12, status: "pending")
+Application.create!(room: room_b1, seeker: benjamin, message: "Hola, también estoy interesado si no resulta con el otro postulante.", move_in_date: Date.current, intended_stay_months: 6, status: "pending")
+app_3.update!(status: :shortlisted)
 
-app_5 = Application.create!(room: room_c1, seeker: valentina, message: "Me interesa esta pieza también, está más cerca de mi trabajo.", status: "withdrawn")
+app_5 = Application.create!(room: room_c1, seeker: valentina, message: "Me interesa esta pieza también, está más cerca de mi trabajo.", move_in_date: Date.current + 10.days, intended_stay_months: 3, status: "pending")
+app_5.update!(status: :withdrawn)
 
-app_6 = Application.create!(room: room_d1, seeker: diego, message: "Hola, vi la pieza y me gustaría agendar una visita esta semana.", status: "submitted")
+app_6 = Application.create!(room: room_d1, seeker: diego, message: "Hola, vi la pieza y me gustaría agendar una visita esta semana.", move_in_date: Date.current + 1.day, intended_stay_months: 6, status: "pending")
 
 puts "Creating visits..."
-Visit.create!(application: app_1, scheduled_at: app_1.created_at + 2.days, status: "scheduled")
-Visit.create!(application: app_3, scheduled_at: app_3.created_at + 1.day, status: "completed")
+Visit.create!(application: app_1, scheduled_at: app_1.created_at + 2.days)
+completed_visit = Visit.create!(application: app_3, scheduled_at: Time.current + 1.day)
+completed_visit.update!(status: :confirmed)
+app_3.accept!
+completed_visit.update!(scheduled_at: Time.current - 1.day, status: :completed)
+room_b1.mark_rented!
 
 puts "Creating reviews..."
-Review.create!(property: property_a, author: martina, rating: 5, comment: "Excelente ubicación y la host siempre respondió rápido. Muy recomendable.")
-Review.create!(property: property_a, author: benjamin, rating: 4, comment: "Buena pieza, el único detalle es que el wifi a veces es lento en el segundo piso.")
-Review.create!(property: property_c, author: valentina, rating: 3, comment: "Está bien para el precio, pero la pieza es más chica de lo que parecía en las fotos.")
+Review.create!(property: property_b, author: martina, visit: completed_visit, rating: 5, comment: "Excelente ubicación y la host siempre respondió rápido. Muy recomendable.")
 
 puts "Creating saved listings..."
 SavedListing.create!(seeker: valentina, room: room_c1)

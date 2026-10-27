@@ -1,0 +1,10 @@
+<%= form_with model: review, url: review.persisted? ? property_review_path(property, review) : property_reviews_path(property),
+              method: review.persisted? ? :patch : :post do |form| %>
+  <% if review.errors.any? %><div class="alert alert-danger"><%= review.errors.full_messages.to_sentence %></div><% end %>
+  <% unless review.persisted? %>
+    <div class="mb-3"><%= form.label :visit_id, "Completed visit", class: "form-label" %><%= form.collection_select :visit_id, visits, :id, ->(visit) { "#{visit.application.room.label} — #{visit.scheduled_at.to_date}" }, { prompt: "Choose a visit" }, required: true, class: "form-select" %><% review.errors.full_messages_for(:visit).each do |message| %><div class="text-danger"><%= message %></div><% end %></div>
+  <% end %>
+  <div class="mb-3"><%= form.label :rating, class: "form-label" %><%= form.number_field :rating, min: 1, max: 5, required: true, class: "form-control" %><% review.errors.full_messages_for(:rating).each do |message| %><div class="text-danger"><%= message %></div><% end %></div>
+  <div class="mb-3"><%= form.label :comment, class: "form-label" %><%= form.text_area :comment, maxlength: 2000, class: "form-control" %><% review.errors.full_messages_for(:comment).each do |message| %><div class="text-danger"><%= message %></div><% end %></div>
+  <%= form.submit class: "btn btn-primary" %>
+<% end %>

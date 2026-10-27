@@ -1,7 +1,6 @@
 # Roomies
 
-Room rental platform — Assignment 1 (user stories, domain model, landing page) and
-Assignment 2 (Rails application, models, and read-only views).
+Room rental platform — Assignments 1–3 (domain design, read-only Rails views, and CRUD workflows).
 
 ## Team
 
@@ -32,7 +31,20 @@ Assignment 2 (Rails application, models, and read-only views).
 
 ## Running the Rails app
 
-This app uses Rails 8, PostgreSQL, and Bootstrap via `cssbundling-rails`.
+This app uses Rails 8, PostgreSQL, and Bootstrap via `cssbundling-rails`. Image
+variants use the `image_processing` dependency configured in the Gemfile.
+
+## Assignment 3 setup
+
+Active Storage stores photographs on the configured local disk service. Action Text
+stores listing descriptions and house rules. Run `bin/rails db:migrate` after updating
+the code; `bin/rails db:seed` loads the sample users and listings. Photo uploads accept
+PNG, JPEG, WebP, and GIF files up to **10 MB per photograph**. Image variants use the
+`image_processing` gem and libvips (included in the production Docker image); install
+libvips on a local development machine before requesting image variants.
+
+There is no authentication yet. Choose the acting user from the navigation bar; that
+user is used as the author/seeker/host for actions.
 
 To set it up locally:
 

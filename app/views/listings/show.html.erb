@@ -1,8 +1,15 @@
 <div class="container py-5">
   <div class="row g-5">
     <div class="col-lg-7">
-      <% @room.room_photos.each do |photo| %>
-        <%= image_tag photo.url, class: "img-fluid rounded mb-3", alt: "Photo of #{@room.label}" %>
+      <span class="badge bg-info text-dark"><%= @room.status.humanize %></span>
+      <% @room.photographs.each do |photo| %>
+        <%= image_tag photo.variant(resize_to_limit: [1200, 900]), class: "img-fluid rounded mb-3",
+              alt: "Photo of #{@room.label}" %>
+      <% end %>
+      <% if @room.photographs.empty? %>
+        <% @room.room_photos.each do |photo| %>
+          <%= image_tag photo.url, class: "img-fluid rounded mb-3", alt: "Photo of #{@room.label}" %>
+        <% end %>
       <% end %>
 
       <h1><%= @room.label %> — <%= @room.property.neighborhood.name %></h1>
@@ -10,7 +17,16 @@
         <%= number_to_currency(@room.price, precision: 0) %> / month
         · Available <%= @room.available_from.strftime("%B %-d, %Y") %>
       </p>
-      <p><%= @room.description %></p>
+      <div class="listing-description"><%= @room.description %></div>
+      <% if @room.house_rules.present? %>
+        <h2 class="h4 mt-4">House rules</h2>
+        <div><%= @room.house_rules %></div>
+      <% end %>
+      <dl class="row mt-3">
+        <dt class="col-sm-5">Minimum stay</dt><dd class="col-sm-7"><%= pluralize(@room.minimum_stay_months, "month") if @room.minimum_stay_months %></dd>
+        <dt class="col-sm-5">Furnished</dt><dd class="col-sm-7"><%= @room.furnished? ? "Yes" : "No" %></dd>
+        <dt class="col-sm-5">Private bathroom</dt><dd class="col-sm-7"><%= @room.private_bathroom? ? "Yes" : "No" %></dd>
+      </dl>
 
       <h2 class="h4 mt-4">Amenities</h2>
       <ul class="list-inline">
@@ -27,6 +43,22 @@
         <p><%= @room.property.description %></p>
         <%= link_to "See full property", property_path(@room.property), class: "link-brand" %>
       </div>
+      <% if current_user&.id == @room.property.host_id %>
+        <div class="d-flex flex-wrap gap-2 mt-3">
+          <%= link_to "Edit listing", edit_listing_path(@room), class: "btn btn-outline-primary" %>
+          <% if @room.draft? %>
+            <%= button_to "Publish", publish_listing_path(@room), method: :patch, class: "btn btn-success" %>
+          <% elsif @room.published? || @room.reserved? %>
+            <%= button_to "Withdraw", withdraw_listing_path(@room), method: :patch, class: "btn btn-outline-danger" %>
+          <% end %>
+          <% if @room.reserved? %>
+            <%= button_to "Mark as rented", mark_rented_listing_path(@room), method: :patch, class: "btn btn-success" %>
+          <% end %>
+          <%= button_to "Delete listing", listing_path(@room), method: :delete, class: "btn btn-danger",
+                data: { turbo_confirm: "Delete this listing?" } %>
+        </div>
+      <% end %>
+      <%= render "application_block", room: @room, application: @application, new_application: @new_application %>
 
       <h2 class="h5 mt-4">Reviews</h2>
       <% if @room.property.reviews.any? %>

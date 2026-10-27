@@ -1,0 +1,14 @@
+<tr id="<%= dom_id(application) %>">
+  <td><%= application.seeker.name %></td>
+  <td><%= link_to application.room.label, listing_path(application.room) %></td>
+  <td><span class="badge bg-secondary"><%= application.status.humanize %></span></td>
+  <td><%= application.created_at.strftime("%b %-d, %Y") %></td>
+  <td>
+    <%= link_to "View", application_path(application), class: "link-brand" %>
+    <% if application.pending? || application.shortlisted? %>
+      <%= button_to "Shortlist", application_path(application), method: :patch, params: { application: { status: "shortlisted" } }, class: "btn btn-sm btn-outline-primary" %>
+      <%= button_to "Reject", application_path(application), method: :patch, params: { application: { status: "rejected" } }, class: "btn btn-sm btn-outline-danger" %>
+      <%= button_to "Accept", application_path(application), method: :patch, params: { application: { status: "accepted" } }, class: "btn btn-sm btn-success" %>
+    <% end %>
+  </td>
+</tr>

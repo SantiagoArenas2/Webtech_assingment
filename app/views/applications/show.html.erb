@@ -4,12 +4,41 @@
   <p><strong>Room:</strong> <%= link_to @application.room.label, listing_path(@application.room) %></p>
   <p><strong>Status:</strong> <span class="badge bg-secondary"><%= @application.status.humanize %></span></p>
   <p><strong>Message:</strong> <%= @application.message %></p>
+  <p><strong>Move-in date:</strong> <%= @application.move_in_date %></p>
+  <p><strong>Intended stay:</strong> <%= pluralize(@application.intended_stay_months, "month") %></p>
 
-  <% if @application.visit %>
+  <% if @application.visit&.persisted? %>
     <h2 class="h5 mt-4">Visit</h2>
     <p>
       <%= @application.visit.scheduled_at.strftime("%B %-d, %Y %H:%M") %>
       — <%= @application.visit.status.humanize %>
     </p>
+  <% end %>
+  <% if @application.shortlisted? || (@application.accepted? && @application.visit&.persisted?) || @visit&.errors&.any? %>
+    <h2 class="h5 mt-4">Propose a visit</h2>
+    <% if @visit&.errors&.any? %><div class="alert alert-danger"><%= @visit.errors.full_messages.to_sentence %></div><% end %>
+    <% if @application.visit&.persisted? %>
+      <p><%= @application.visit.scheduled_at.strftime("%b %-d, %Y %H:%M") %> — <%= @application.visit.status.humanize %></p>
+      <% unless @application.visit.completed? || @application.visit.cancelled? %>
+        <%= form_with model: @application.visit, url: application_visit_path(@application, @application.visit), method: :patch do |form| %>
+          <div class="mb-2"><%= form.label :scheduled_at, "Reschedule", class: "form-label" %><%= form.datetime_local_field :scheduled_at, required: true, min: Time.current.strftime("%Y-%m-%dT%H:%M"), class: "form-control" %></div>
+          <% @application.visit.errors.full_messages_for(:scheduled_at).each do |message| %><div class="text-danger"><%= message %></div><% end %>
+          <%= form.submit "Reschedule visit", class: "btn btn-outline-primary" %>
+        <% end %>
+        <% unless @application.visit.confirmed? %>
+          <%= button_to "Confirm visit", application_visit_path(@application, @application.visit), method: :patch, params: { visit: { status: "confirmed" } }, class: "btn btn-success mt-2" %>
+        <% end %>
+        <% if @application.visit.confirmed? || @application.visit.scheduled? || @application.visit.rescheduled? %>
+          <%= button_to "Mark completed", application_visit_path(@application, @application.visit), method: :patch, params: { visit: { status: "completed" } }, class: "btn btn-success mt-2" %>
+        <% end %>
+        <%= button_to "Cancel visit", application_visit_path(@application, @application.visit), method: :patch, params: { visit: { status: "cancelled" } }, class: "btn btn-outline-danger mt-2" %>
+      <% end %>
+    <% elsif @application.shortlisted? %>
+      <%= form_with model: (@visit || Visit.new), url: application_visits_path(@application) do |form| %>
+        <div class="mb-2"><%= form.label :scheduled_at, class: "form-label" %><%= form.datetime_local_field :scheduled_at, required: true, min: Time.current.strftime("%Y-%m-%dT%H:%M"), class: "form-control" %></div>
+        <% @visit&.errors&.full_messages_for(:scheduled_at)&.each do |message| %><div class="text-danger"><%= message %></div><% end %>
+        <%= form.submit "Propose visit", class: "btn btn-primary" %>
+      <% end %>
+    <% end %>
   <% end %>
 </div>

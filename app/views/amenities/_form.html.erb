@@ -1,0 +1,5 @@
+<%= form_with model: amenity do |form| %>
+  <% if amenity.errors.any? %><div class="alert alert-danger"><%= amenity.errors.full_messages.to_sentence %></div><% end %>
+  <div class="mb-3"><%= form.label :name, class: "form-label" %><%= form.text_field :name, required: true, class: "form-control" %><% amenity.errors.full_messages_for(:name).each do |message| %><div class="text-danger"><%= message %></div><% end %></div>
+  <%= form.submit class: "btn btn-primary" %>
+<% end %>
