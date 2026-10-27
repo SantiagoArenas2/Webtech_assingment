@@ -18,7 +18,7 @@ class Application < ApplicationRecord
   validate :eligible_to_apply, on: :create
   validate :valid_status_change
 
-  scope :pending_answer, -> { where(status: [:pending, :shortlisted]) }
+  scope :pending_answer, -> { where(status: [ :pending, :shortlisted ]) }
 
   def accept!
     self.class.transaction do

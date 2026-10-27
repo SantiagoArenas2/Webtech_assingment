@@ -11,7 +11,7 @@ class ListingsController < ApplicationController
 
   def show
     @room = Room.includes(:room_photos, :photographs_attachments,
-                          property: [:neighborhood, :amenities, :reviews]).find(params[:id])
+                          property: [ :neighborhood, :amenities, :reviews ]).find(params[:id])
     raise ActiveRecord::RecordNotFound if @room.draft? && @room.property.host_id != current_user&.id
 
     @application = @room.applications.find_by(seeker: current_user)

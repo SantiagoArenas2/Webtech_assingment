@@ -14,13 +14,6 @@ ActiveRecord::Schema[8.0].define(version: 2026_10_01_000013) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
-  create_table "amenities", force: :cascade do |t|
-    t.string "name", null: false
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.index ["name"], name: "index_amenities_on_name", unique: true
-  end
-
   create_table "action_text_rich_texts", force: :cascade do |t|
     t.string "name", null: false
     t.text "body"
@@ -59,18 +52,25 @@ ActiveRecord::Schema[8.0].define(version: 2026_10_01_000013) do
     t.index ["blob_id", "variation_digest"], name: "index_active_storage_variant_records_uniqueness", unique: true
   end
 
+  create_table "amenities", force: :cascade do |t|
+    t.string "name", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["name"], name: "index_amenities_on_name", unique: true
+  end
+
   create_table "applications", force: :cascade do |t|
     t.bigint "room_id", null: false
     t.bigint "seeker_id", null: false
     t.text "message", null: false
     t.string "status", default: "pending", null: false
-    t.date "move_in_date", null: false
-    t.integer "intended_stay_months", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.date "move_in_date", null: false
+    t.integer "intended_stay_months", null: false
     t.index ["room_id", "seeker_id"], name: "index_applications_on_room_id_and_seeker_id", unique: true
     t.index ["room_id"], name: "index_applications_on_room_id"
-    t.index ["room_id"], name: "index_applications_one_accepted_per_room", unique: true, where: "(status)::text = 'accepted'::text"
+    t.index ["room_id"], name: "index_applications_one_accepted_per_room", unique: true, where: "((status)::text = 'accepted'::text)"
     t.index ["seeker_id"], name: "index_applications_on_seeker_id"
   end
 
@@ -86,12 +86,12 @@ ActiveRecord::Schema[8.0].define(version: 2026_10_01_000013) do
     t.bigint "neighborhood_id", null: false
     t.string "address", null: false
     t.text "description"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
     t.string "property_type", default: "house", null: false
     t.integer "bedrooms", default: 1, null: false
     t.integer "bathrooms", default: 1, null: false
     t.text "shared_spaces"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
     t.index ["host_id"], name: "index_properties_on_host_id"
     t.index ["neighborhood_id"], name: "index_properties_on_neighborhood_id"
   end
@@ -125,9 +125,9 @@ ActiveRecord::Schema[8.0].define(version: 2026_10_01_000013) do
     t.bigint "author_id", null: false
     t.integer "rating", null: false
     t.text "comment"
-    t.bigint "visit_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.bigint "visit_id"
     t.index ["author_id"], name: "index_reviews_on_author_id"
     t.index ["property_id"], name: "index_reviews_on_property_id"
     t.index ["visit_id"], name: "index_reviews_on_visit_id", unique: true
@@ -150,10 +150,10 @@ ActiveRecord::Schema[8.0].define(version: 2026_10_01_000013) do
     t.integer "minimum_stay_months"
     t.date "available_from", null: false
     t.string "status", default: "draft", null: false
-    t.boolean "furnished", default: false, null: false
-    t.boolean "private_bathroom", default: false, null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.boolean "furnished", default: false, null: false
+    t.boolean "private_bathroom", default: false, null: false
     t.index ["property_id"], name: "index_rooms_on_property_id"
   end
 
@@ -186,10 +186,10 @@ ActiveRecord::Schema[8.0].define(version: 2026_10_01_000013) do
     t.index ["application_id"], name: "index_visits_on_application_id", unique: true
   end
 
-  add_foreign_key "applications", "rooms"
-  add_foreign_key "applications", "users", column: "seeker_id"
   add_foreign_key "active_storage_attachments", "active_storage_blobs", column: "blob_id"
   add_foreign_key "active_storage_variant_records", "active_storage_blobs", column: "blob_id"
+  add_foreign_key "applications", "rooms"
+  add_foreign_key "applications", "users", column: "seeker_id"
   add_foreign_key "properties", "neighborhoods"
   add_foreign_key "properties", "users", column: "host_id"
   add_foreign_key "property_amenities", "amenities"

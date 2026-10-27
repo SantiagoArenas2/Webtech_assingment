@@ -33,7 +33,7 @@ class Room < ApplicationRecord
   end
 
   def withdraw!
-    transition_to!(:withdrawn, from: [:published, :reserved])
+    transition_to!(:withdrawn, from: [ :published, :reserved ])
   end
 
   def mark_rented!
