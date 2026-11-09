@@ -1,8 +1,19 @@
 <div class="container py-5">
-  <div class="d-flex justify-content-between align-items-center mb-4"><h1>Amenities</h1><%= link_to "Add amenity", new_amenity_path, class: "btn btn-primary" %></div>
+  <div class="d-flex justify-content-between align-items-center mb-4">
+    <h1>Amenities</h1>
+    <% if current_user&.moderator? %><%= link_to "Add amenity", new_amenity_path, class: "btn btn-primary" %><% end %>
+  </div>
   <ul class="list-group">
     <% @amenities.each do |amenity| %>
-      <li class="list-group-item d-flex justify-content-between"><%= amenity.name %><span><%= link_to "Edit", edit_amenity_path(amenity), class: "btn btn-sm btn-outline-primary" %> <%= button_to "Delete", amenity_path(amenity), method: :delete, class: "btn btn-sm btn-outline-danger" %></span></li>
+      <li class="list-group-item d-flex justify-content-between">
+        <%= amenity.name %>
+        <% if current_user&.moderator? %>
+          <span>
+            <%= link_to "Edit", edit_amenity_path(amenity), class: "btn btn-sm btn-outline-primary" %>
+            <%= button_to "Delete", amenity_path(amenity), method: :delete, class: "btn btn-sm btn-outline-danger" %>
+          </span>
+        <% end %>
+      </li>
     <% end %>
   </ul>
 </div>

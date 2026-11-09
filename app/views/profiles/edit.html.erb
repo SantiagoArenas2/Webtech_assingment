@@ -1,0 +1,13 @@
+<div class="container py-5" style="max-width: 42rem">
+  <h1 class="mb-4">Edit your profile</h1>
+  <%= form_with model: @user, url: profile_path, method: :patch, class: "card card-body shadow-sm" do |form| %>
+    <% if @user.errors.any? %>
+      <div class="alert alert-danger"><%= @user.errors.full_messages.to_sentence %></div>
+    <% end %>
+    <div class="mb-3"><%= form.label :name, class: "form-label" %><%= form.text_field :name, required: true, class: "form-control" %></div>
+    <div class="mb-3"><%= form.label :email, class: "form-label" %><%= form.email_field :email, required: true, class: "form-control" %></div>
+    <div class="mb-3"><%= form.label :contact_details, "Contact details", class: "form-label" %><%= form.text_field :contact_details, class: "form-control" %></div>
+    <div class="mb-3"><%= form.label :bio, class: "form-label" %><%= form.text_area :bio, rows: 4, maxlength: 500, class: "form-control" %><div class="form-text">Maximum 500 characters.</div></div>
+    <%= form.submit "Save profile", class: "btn btn-primary" %>
+  <% end %>
+</div>

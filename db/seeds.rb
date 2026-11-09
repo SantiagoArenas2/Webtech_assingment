@@ -1,5 +1,5 @@
 puts "Clearing existing data..."
-[Report, SavedListing, Review, Visit, Application, RoomPhoto, Room,
+[Session, Report, SavedListing, Review, Visit, Application, RoomPhoto, Room,
  PropertyAmenity, Property, Amenity, Neighborhood, User].each(&:delete_all)
 
 puts "Creating neighborhoods..."
@@ -16,22 +16,22 @@ wifi, private_bathroom, washing_machine, furnished, heating, parking = amenities
 
 puts "Creating users..."
 hosts = [
-  User.create!(name: "Camila Reyes", email: "camila.reyes@example.com", password_hash: "hashed-pw-1"),
-  User.create!(name: "Jorge Muñoz", email: "jorge.munoz@example.com", password_hash: "hashed-pw-2")
+  User.create!(name: "Camila Reyes", email: "camila.reyes@example.com", password: "Roomies123!"),
+  User.create!(name: "Jorge Muñoz", email: "jorge.munoz@example.com", password: "Roomies123!")
 ]
 
 seekers = [
-  User.create!(name: "Valentina Soto", email: "valentina.soto@example.com", password_hash: "hashed-pw-3"),
-  User.create!(name: "Diego Fuentes", email: "diego.fuentes@example.com", password_hash: "hashed-pw-4"),
-  User.create!(name: "Martina Rojas", email: "martina.rojas@example.com", password_hash: "hashed-pw-5"),
-  User.create!(name: "Benjamín Castro", email: "benjamin.castro@example.com", password_hash: "hashed-pw-6")
+  User.create!(name: "Valentina Soto", email: "valentina.soto@example.com", password: "Roomies123!"),
+  User.create!(name: "Diego Fuentes", email: "diego.fuentes@example.com", password: "Roomies123!"),
+  User.create!(name: "Martina Rojas", email: "martina.rojas@example.com", password: "Roomies123!"),
+  User.create!(name: "Benjamín Castro", email: "benjamin.castro@example.com", password: "Roomies123!")
 ]
 
 moderator = User.create!(
   name: "Francisca Vidal",
   email: "francisca.vidal@example.com",
-  password_hash: "hashed-pw-7",
-  is_moderator: true
+  password: "Roomies123!",
+  role: :moderator
 )
 
 camila, jorge = hosts
@@ -100,6 +100,11 @@ room_d1 = Room.create!(
   property: property_d, label: "Studio room", price: 260_000, deposit: 260_000,
   minimum_stay_months: 6, available_from: Date.current + 1.day, status: "published",
   description: "Pieza con calefacción central, ideal para quien estudia hasta tarde."
+)
+room_a3 = Room.create!(
+  property: property_a, label: "Draft room", price: 240_000, deposit: 240_000,
+  minimum_stay_months: 3, available_from: Date.current + 30.days,
+  description: "A draft listing visible only to its host and moderators."
 )
 [room_a1, room_a2, room_b1, room_c1, room_c2, room_d1].each(&:publish!)
 room_c2.withdraw!

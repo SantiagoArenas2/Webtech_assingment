@@ -5,7 +5,8 @@
   <td><%= application.created_at.strftime("%b %-d, %Y") %></td>
   <td>
     <%= link_to "View", application_path(application), class: "link-brand" %>
-    <% if application.pending? || application.shortlisted? %>
+    <% if current_user&.member? && application.room.property.host_id == current_user.id &&
+          (application.pending? || application.shortlisted?) %>
       <%= button_to "Shortlist", application_path(application), method: :patch, params: { application: { status: "shortlisted" } }, class: "btn btn-sm btn-outline-primary" %>
       <%= button_to "Reject", application_path(application), method: :patch, params: { application: { status: "rejected" } }, class: "btn btn-sm btn-outline-danger" %>
       <%= button_to "Accept", application_path(application), method: :patch, params: { application: { status: "accepted" } }, class: "btn btn-sm btn-success" %>

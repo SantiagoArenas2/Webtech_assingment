@@ -44,6 +44,6 @@ class VisitAndReviewRulesTest < ActiveSupport::TestCase
   private
 
   def create_user(name)
-    User.create!(name: name, email: "#{name}@example.test", password_hash: "test")
+    User.create!(name: name, email: "#{name}@example.test", password: "Roomies123!")
   end
 end

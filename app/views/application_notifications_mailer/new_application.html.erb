@@ -1,0 +1,5 @@
+<h1>New application received</h1>
+<p><%= @application.seeker.name %> applied for <%= @room.label %>.</p>
+<p>Move-in date: <%= @application.move_in_date %></p>
+<p>Message: <%= @application.message %></p>
+<p><%= link_to "Review the application", application_url(@application) %></p>

@@ -1,18 +1,24 @@
 class ApplicationController < ActionController::Base
+  include Authentication
+  include Pundit::Authorization
+
   # Only allow modern browsers supporting webp images, web push, badges, import maps, CSS nesting, and CSS :has.
   allow_browser versions: :modern
 
   helper_method :current_user
+  rescue_from Pundit::NotAuthorizedError, with: :user_not_authorized
 
   private
 
   def current_user
-    @current_user ||= User.find_by(id: cookies.signed[:acting_user_id]) || User.order(:id).first
+    Current.user || resume_session&.user
   end
 
-  def require_current_user
-    return if current_user
+  def user_not_authorized
+    redirect_to root_path, alert: "You are not allowed to perform that action."
+  end
 
-    redirect_to root_path, alert: "Create a user before performing this action."
+  def pundit_user
+    current_user
   end
 end

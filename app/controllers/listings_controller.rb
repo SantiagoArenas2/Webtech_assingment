@@ -1,6 +1,10 @@
 class ListingsController < ApplicationController
+  allow_unauthenticated_access only: %i[index show]
+
   def index
-    @rooms = Room.published.includes(:room_photos, property: :neighborhood)
+    authorize Room, :index?
+    @rooms = policy_scope(Room).published.includes(:room_photos, property: :neighborhood)
+    @neighborhoods = Neighborhood.order(:name)
 
     if params[:neighborhood_id].present?
       @rooms = @rooms.joins(:property).where(properties: { neighborhood_id: params[:neighborhood_id] })
@@ -12,20 +16,24 @@ class ListingsController < ApplicationController
   def show
     @room = Room.includes(:room_photos, :photographs_attachments,
                           property: [ :neighborhood, :amenities, :reviews ]).find(params[:id])
-    raise ActiveRecord::RecordNotFound if @room.draft? && @room.property.host_id != current_user&.id
+    authorize @room
 
     @application = @room.applications.find_by(seeker: current_user)
     @new_application = @room.applications.new
   end
 
   def new
-    @property = owned_property
+    @property = Property.find(params[:property_id])
+    authorize @property, :update?
     @room = @property.rooms.new
+    authorize @room, :create?
   end
 
   def create
-    @property = owned_property
+    @property = Property.find(params[:property_id])
+    authorize @property, :update?
     @room = @property.rooms.new(room_params)
+    authorize @room, :create?
     if @room.save
       redirect_to listing_path(@room), notice: "Draft listing created."
     else
@@ -55,30 +63,22 @@ class ListingsController < ApplicationController
   end
 
   def publish
-    transition_listing { owned_listing.publish! }
+    transition_listing(:publish?) { owned_listing.publish! }
   end
 
   def withdraw
-    transition_listing { owned_listing.withdraw! }
+    transition_listing(:withdraw?) { owned_listing.withdraw! }
   end
 
   def mark_rented
-    transition_listing { owned_listing.mark_rented! }
+    transition_listing(:mark_rented?) { owned_listing.mark_rented! }
   end
 
   private
 
-  def owned_property
-    property = Property.find(params[:property_id])
-    raise ActiveRecord::RecordNotFound unless property.host_id == current_user&.id
-
-    property
-  end
-
   def owned_listing
     room = Room.find(params[:id])
-    raise ActiveRecord::RecordNotFound unless room.property.host_id == current_user&.id
-
+    authorize room, :update?
     room
   end
 
@@ -88,7 +88,9 @@ class ListingsController < ApplicationController
                                  photographs: [])
   end
 
-  def transition_listing
+  def transition_listing(action)
+    room = Room.find(params[:id])
+    authorize room, action
     yield
     redirect_to listing_path(params[:id]), notice: "Listing status updated."
   rescue ActiveRecord::RecordInvalid => error

@@ -1,0 +1,2 @@
+class AmenityPolicy < NeighborhoodPolicy
+end

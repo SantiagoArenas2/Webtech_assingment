@@ -31,9 +31,9 @@ separate "closed" entity, since no new information needs to be recorded beyond t
 
 - A `report` targets a `room`, not a `property`, since listings are browsed and reported at the room level; a
   report about the property itself (e.g. a fake address) is filed against one of its rooms.
-- Only a `user` with `is_moderator = true` can resolve a `report` (accepted as the value of `resolved_by`); the
-  brief doesn't specify whether moderators are a fully separate account type, and we assumed a flag on `users` is
-  sufficient since nothing in the brief suggests a moderator can't also use the platform as a member.
+- Only a `user` with `role = moderator` can resolve a `report` (recorded through `resolver_id`); the
+  brief doesn't specify whether moderators are a fully separate account type, and nothing suggests a moderator
+  cannot also use the platform's member features.
 - A `review` is tied to a `property`, not a `room`, since visits and stays are experienced at the property level
   (shared spaces, host responsiveness) even though the specific room being reviewed may no longer exist by the
   time the review is written.
@@ -50,3 +50,10 @@ separate "closed" entity, since no new information needs to be recorded beyond t
   is still enforced via a unique index.
 - Renamed `reports.resolved_by` to `reports.resolver_id`, to match the `_id` suffix Rails expects for a
   `belongs_to :resolver` association.
+
+## Assignment 4 authentication and authorization
+
+- Accounts use Rails 8's generated session and password-reset flow. The `role` enum distinguishes members from
+  moderators; visitors are represented by a missing session, not a stored role.
+- Pundit policies enforce ownership in controllers and scope applications to their seeker, listing host, or a
+  moderator. Public listing API responses intentionally exclude account/contact information.

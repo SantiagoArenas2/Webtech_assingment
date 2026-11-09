@@ -1,12 +1,14 @@
 class ApplicationsController < ApplicationController
   def index
-    @applications = Application.joins(room: :property).where(properties: { host_id: current_user&.id })
-                               .includes(:seeker, room: :property).order(created_at: :desc)
+    authorize Application, :index?
+    @applications = policy_scope(Application).includes(:seeker, room: :property).order(created_at: :desc)
     @pending_count = @applications.pending_answer.count
   end
 
   def show
-    @application = host_application
+    @application = policy_scope(Application).includes(:seeker, :visit, room: :property).find_by(id: params[:id])
+    raise Pundit::NotAuthorizedError unless @application
+    authorize @application
     @visit = @application.visit
   end
 
@@ -14,7 +16,9 @@ class ApplicationsController < ApplicationController
     @room = Room.find(params[:listing_id])
     @new_application = @room.applications.new(application_params)
     @new_application.seeker = current_user
+    authorize @new_application, :create?
     if @new_application.save
+      ApplicationNotificationsMailer.new_application(@new_application).deliver_later
       @application = @new_application
       flash.now[:notice] = "Application submitted."
       respond_to do |format|
@@ -38,7 +42,8 @@ class ApplicationsController < ApplicationController
   end
 
   def update
-    @application = host_application
+    @application = Application.includes(:seeker, :visit, room: :property).find(params[:id])
+    authorize @application, :update?
     action = params.dig(:application, :status)
     if action == "accepted"
       @application.accept!
@@ -47,8 +52,7 @@ class ApplicationsController < ApplicationController
     else
       raise ActionController::BadRequest, "Invalid application status"
     end
-    @applications = Application.joins(room: :property).where(properties: { host_id: current_user.id })
-                               .includes(:seeker, room: :property).order(created_at: :desc)
+    @applications = policy_scope(Application).includes(:seeker, room: :property).order(created_at: :desc)
     @pending_count = @applications.pending_answer.count
     flash.now[:notice] = "Application updated."
     respond_to do |format|
@@ -60,7 +64,8 @@ class ApplicationsController < ApplicationController
   end
 
   def withdraw
-    application = Application.find_by!(id: params[:id], seeker_id: current_user&.id)
+    application = Application.find(params[:id])
+    authorize application, :withdraw?
     if application.pending? || application.shortlisted?
       application.update!(status: :withdrawn)
       redirect_to listing_path(application.room), notice: "Application withdrawn."
@@ -70,11 +75,6 @@ class ApplicationsController < ApplicationController
   end
 
   private
-
-  def host_application
-    Application.joins(room: :property).where(properties: { host_id: current_user&.id })
-               .includes(:seeker, :visit, room: :property).find(params[:id])
-  end
 
   def application_params
     params.require(:application).permit(:message, :move_in_date, :intended_stay_months)

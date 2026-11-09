@@ -4,7 +4,7 @@
   <p><%= @property.description %></p>
   <p><strong><%= @property.property_type.humanize %></strong> · <%= pluralize(@property.bedrooms, "bedroom") %> · <%= pluralize(@property.bathrooms, "bathroom") %></p>
   <p>Shared spaces: <%= @property.shared_spaces.presence || "Not specified" %></p>
-  <% if current_user&.id == @property.host_id %>
+  <% if current_user && (current_user.moderator? || current_user.id == @property.host_id) %>
     <div class="d-flex gap-2">
       <%= link_to "Edit property", edit_property_path(@property), class: "btn btn-outline-primary" %>
       <%= link_to "Add listing", new_property_listing_path(@property), class: "btn btn-primary" %>
@@ -41,6 +41,8 @@
         <p class="mb-0"><%= review.comment %></p>
         <% if current_user&.id == review.author_id %>
           <%= link_to "Edit review", edit_property_review_path(@property, review), class: "btn btn-sm btn-outline-primary" %>
+        <% end %>
+        <% if current_user && (current_user.moderator? || current_user.id == review.author_id) %>
           <%= button_to "Delete review", property_review_path(@property, review), method: :delete, class: "btn btn-sm btn-outline-danger" %>
         <% end %>
       </div>

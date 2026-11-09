@@ -1,10 +1,14 @@
 class NeighborhoodsController < ApplicationController
+  allow_unauthenticated_access only: %i[index show]
+
   def index
+    authorize Neighborhood, :index?
     @neighborhoods = Neighborhood.order(:name)
   end
 
   def show
     @neighborhood = Neighborhood.find(params[:id])
+    authorize @neighborhood
     @rooms = Room.published
                  .joins(:property)
                  .where(properties: { neighborhood_id: @neighborhood.id })
@@ -13,10 +17,12 @@ class NeighborhoodsController < ApplicationController
 
   def new
     @neighborhood = Neighborhood.new
+    authorize @neighborhood, :create?
   end
 
   def create
     @neighborhood = Neighborhood.new(neighborhood_params)
+    authorize @neighborhood, :create?
     if @neighborhood.save
       redirect_to neighborhoods_path, notice: "Neighborhood created."
     else
@@ -27,10 +33,12 @@ class NeighborhoodsController < ApplicationController
 
   def edit
     @neighborhood = Neighborhood.find(params[:id])
+    authorize @neighborhood, :update?
   end
 
   def update
     @neighborhood = Neighborhood.find(params[:id])
+    authorize @neighborhood, :update?
     if @neighborhood.update(neighborhood_params)
       redirect_to neighborhoods_path, notice: "Neighborhood updated."
     else
@@ -41,6 +49,7 @@ class NeighborhoodsController < ApplicationController
 
   def destroy
     neighborhood = Neighborhood.find(params[:id])
+    authorize neighborhood, :destroy?
     if neighborhood.destroy
       redirect_to neighborhoods_path, notice: "Neighborhood deleted."
     else

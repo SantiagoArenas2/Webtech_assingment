@@ -1,15 +1,37 @@
 <div class="container py-5">
   <h1 class="mb-4">Listings</h1>
 
-  <% if @rooms.empty? %>
-    <p class="text-muted">No listings match your search.</p>
-  <% else %>
-    <div class="row g-4">
+  <%= form_with url: listings_path, method: :get, id: "listing-search", class: "row g-3 mb-4",
+        data: { api_url: api_v1_listings_path(format: :json) } do |form| %>
+    <div class="col-md-4">
+      <%= form.label :neighborhood_id, "Neighborhood", class: "form-label" %>
+      <%= form.select :neighborhood_id, options_from_collection_for_select(@neighborhoods, :id, :name, params[:neighborhood_id]),
+                      { include_blank: "All neighborhoods" }, class: "form-select" %>
+    </div>
+    <div class="col-md-3">
+      <%= form.label :max_rent, "Maximum monthly rent", class: "form-label" %>
+      <%= form.number_field :max_rent, value: params[:max_rent], min: 1, class: "form-control" %>
+    </div>
+    <div class="col-md-3">
+      <%= form.label :available_from, "Available by", class: "form-label" %>
+      <%= form.date_field :available_from, value: params[:available_from], class: "form-control" %>
+    </div>
+    <div class="col-md-2 d-flex align-items-end">
+      <%= form.submit "Search", class: "btn btn-primary w-100" %>
+    </div>
+  <% end %>
+
+  <div id="listing-results" aria-live="polite">
+    <% if @rooms.empty? %>
+      <p class="text-muted">No listings match your search.</p>
+    <% else %>
+      <div class="row g-4">
       <% @rooms.each do |room| %>
         <div class="col-md-4">
           <%= render "listing_card", room: room %>
         </div>
       <% end %>
-    </div>
-  <% end %>
+      </div>
+    <% end %>
+  </div>
 </div>

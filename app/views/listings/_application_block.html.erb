@@ -30,8 +30,8 @@
         </div>
         <%= form.submit "Apply", class: "btn btn-primary" %>
       <% end %>
-    <% elsif room.published? %>
-      <p>Select an acting user to apply.</p>
+    <% elsif !current_user && room.published? %>
+      <p><%= link_to "Sign in", new_session_path %> to apply for this room.</p>
     <% end %>
   </section>
 <% end %>

@@ -3,6 +3,8 @@ class ReviewsController < ApplicationController
     @property = Property.find(params[:property_id])
     @review = @property.reviews.new(review_params)
     @review.author = current_user
+    @review.visit = Visit.find(@review.visit_id) if @review.visit_id.present?
+    authorize @review, :create?
     if @review.save
       redirect_to property_path(@property), notice: "Review submitted."
     else
@@ -14,12 +16,14 @@ class ReviewsController < ApplicationController
 
   def edit
     @property = Property.find(params[:property_id])
-    @review = @property.reviews.find_by!(id: params[:id], author_id: current_user&.id)
+    @review = @property.reviews.find(params[:id])
+    authorize @review, :update?
   end
 
   def update
     @property = Property.find(params[:property_id])
-    @review = @property.reviews.find_by!(id: params[:id], author_id: current_user&.id)
+    @review = @property.reviews.find(params[:id])
+    authorize @review, :update?
     if @review.update(review_params.except(:visit_id))
       redirect_to property_path(@property), notice: "Review updated."
     else
@@ -30,7 +34,9 @@ class ReviewsController < ApplicationController
 
   def destroy
     property = Property.find(params[:property_id])
-    property.reviews.find_by!(id: params[:id], author_id: current_user&.id).destroy!
+    review = property.reviews.find(params[:id])
+    authorize review, :destroy?
+    review.destroy!
     redirect_to property_path(property), notice: "Review deleted."
   end
 
@@ -42,7 +48,8 @@ class ReviewsController < ApplicationController
 
   def load_property_context
     @rooms = @property.rooms.published
-    @rooms = @rooms.or(@property.rooms.where(status: :draft)) if @property.host_id == current_user&.id
+    @rooms = @rooms.or(@property.rooms.where(status: :draft)) if current_user &&
+      (@property.host_id == current_user.id || current_user.moderator?)
     @completed_visits = Visit.joins(application: :room)
                              .where(status: :completed, applications: { seeker_id: current_user&.id },
                                     rooms: { property_id: @property.id })

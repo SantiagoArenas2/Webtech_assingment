@@ -30,18 +30,22 @@
         <div class="navbar-nav flex-row flex-wrap gap-3">
           <%= link_to "Listings", listings_path, class: "nav-link" %>
           <%= link_to "Properties", properties_path, class: "nav-link" %>
-          <%= link_to "Applications", applications_path, class: "nav-link" %>
           <%= link_to "Neighborhoods", neighborhoods_path, class: "nav-link" %>
-          <%= link_to "Amenities", amenities_path, class: "nav-link" %>
-        </div>
-        <% if User.exists? %>
-          <%= form_with url: acting_as_path, method: :get, class: "ms-auto d-flex align-items-center gap-2" do %>
-            <label for="acting_user" class="text-white">Acting as</label>
-            <%= select_tag :user_id, options_from_collection_for_select(User.order(:name), :id, :name, current_user&.id),
-                           id: "acting_user", class: "form-select form-select-sm" %>
-            <%= submit_tag "Switch", class: "btn btn-sm btn-light" %>
+          <% if current_user %>
+            <%= link_to "Applications", applications_path, class: "nav-link" %>
+            <%= link_to "Amenities", amenities_path, class: "nav-link" if current_user.moderator? %>
+            <%= link_to "Reports", reports_path, class: "nav-link" if current_user.moderator? %>
           <% end %>
-        <% end %>
+        </div>
+        <div class="navbar-nav ms-auto flex-row gap-2 align-items-center">
+          <% if current_user %>
+            <%= link_to current_user.name, edit_profile_path, class: "nav-link" %>
+            <%= button_to "Sign out", session_path, method: :delete, class: "btn btn-sm btn-outline-light" %>
+          <% else %>
+            <%= link_to "Sign in", new_session_path, class: "nav-link" %>
+            <%= link_to "Sign up", new_registration_path, class: "btn btn-sm btn-light" %>
+          <% end %>
+        </div>
       </div>
     </nav>
     <main>

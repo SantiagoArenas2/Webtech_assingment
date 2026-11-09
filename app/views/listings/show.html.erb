@@ -43,7 +43,7 @@
         <p><%= @room.property.description %></p>
         <%= link_to "See full property", property_path(@room.property), class: "link-brand" %>
       </div>
-      <% if current_user&.id == @room.property.host_id %>
+      <% if current_user && (current_user.moderator? || current_user.id == @room.property.host_id) %>
         <div class="d-flex flex-wrap gap-2 mt-3">
           <%= link_to "Edit listing", edit_listing_path(@room), class: "btn btn-outline-primary" %>
           <% if @room.draft? %>
@@ -59,6 +59,17 @@
         </div>
       <% end %>
       <%= render "application_block", room: @room, application: @application, new_application: @new_application %>
+
+      <% if current_user %>
+        <details class="mt-4">
+          <summary class="text-danger">Report this listing</summary>
+          <%= form_with url: listing_reports_path(@room), class: "mt-2" do |form| %>
+            <%= form.label :reason, "Reason", class: "form-label" %>
+            <%= form.text_area :reason, name: "report[reason]", required: true, class: "form-control mb-2" %>
+            <%= form.submit "Submit report", class: "btn btn-outline-danger" %>
+          <% end %>
+        </details>
+      <% end %>
 
       <h2 class="h5 mt-4">Reviews</h2>
       <% if @room.property.reviews.any? %>

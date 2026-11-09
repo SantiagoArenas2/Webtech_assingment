@@ -1,0 +1,30 @@
+<div class="container py-5">
+  <h1 class="mb-4">Listing reports</h1>
+  <% if @reports.empty? %>
+    <p class="text-muted">There are no reports.</p>
+  <% else %>
+    <div class="table-responsive">
+      <table class="table align-middle">
+        <thead><tr><th>Listing</th><th>Reporter</th><th>Reason</th><th>Status</th><th>Resolve</th></tr></thead>
+        <tbody>
+          <% @reports.each do |report| %>
+            <tr>
+              <td><%= link_to report.room.label, listing_path(report.room) %></td>
+              <td><%= report.reporter.name %></td>
+              <td><%= report.reason %></td>
+              <td><%= report.status.humanize %></td>
+              <td>
+                <% if report.pending? %>
+                  <%= button_to "Dismiss", resolve_report_path(report), method: :patch,
+                                params: { report: { status: "dismissed" } }, class: "btn btn-sm btn-outline-secondary" %>
+                  <%= button_to "Take action", resolve_report_path(report), method: :patch,
+                                params: { report: { status: "actioned" } }, class: "btn btn-sm btn-outline-danger mt-1" %>
+                <% end %>
+              </td>
+            </tr>
+          <% end %>
+        </tbody>
+      </table>
+    </div>
+  <% end %>
+</div>

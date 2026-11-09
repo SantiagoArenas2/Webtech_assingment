@@ -3,6 +3,7 @@ class VisitsController < ApplicationController
 
   def create
     @visit = @application.build_visit(visit_params)
+    authorize @visit, :create?
     if @visit.save
       redirect_to application_path(@application), notice: "Visit proposed."
     else
@@ -14,10 +15,19 @@ class VisitsController < ApplicationController
   def update
     @visit = @application.visit
     raise ActiveRecord::RecordNotFound unless @visit
+    authorize @visit, :update?
 
-    if %w[confirmed completed cancelled].include?(params.dig(:visit, :status))
-      @visit.status = params[:visit][:status]
+    requested_status = params.dig(:visit, :status)
+    if requested_status == "cancelled"
+      @visit.status = :cancelled
+    elsif requested_status.in?(%w[confirmed completed]) &&
+          @application.room.property.host_id == current_user.id
+      @visit.status = requested_status
+    elsif requested_status.present?
+      raise Pundit::NotAuthorizedError
     else
+      raise Pundit::NotAuthorizedError unless @application.room.property.host_id == current_user.id
+
       @visit.scheduled_at = visit_params[:scheduled_at]
       @visit.status = :rescheduled
     end
@@ -32,9 +42,8 @@ class VisitsController < ApplicationController
   private
 
   def set_application
-    @application = Application.joins(room: :property)
-                              .where(properties: { host_id: current_user&.id })
-                              .find(params[:application_id])
+    @application = policy_scope(Application).find_by(id: params[:application_id])
+    raise Pundit::NotAuthorizedError unless @application
   end
 
   def visit_params

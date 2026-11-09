@@ -60,7 +60,7 @@ class ApplicationBusinessRulesTest < ActiveSupport::TestCase
   private
 
   def build_user(name)
-    User.create!(name: name, email: "#{name}@example.test", password_hash: "test")
+    User.create!(name: name, email: "#{name}@example.test", password: "Roomies123!")
   end
 
   def build_application(seeker)

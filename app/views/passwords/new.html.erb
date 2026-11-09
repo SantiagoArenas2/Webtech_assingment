@@ -1,0 +1,12 @@
+<div class="container py-5" style="max-width: 34rem">
+  <h1 class="mb-3">Forgot your password?</h1>
+  <p class="text-muted">Enter your email address and we will send reset instructions if an account exists.</p>
+  <%= form_with url: passwords_path, class: "card card-body shadow-sm" do |form| %>
+    <div class="mb-3">
+      <%= form.label :email, class: "form-label" %>
+      <%= form.email_field :email, required: true, autofocus: true, autocomplete: "username",
+                           value: params[:email], class: "form-control" %>
+    </div>
+    <%= form.submit "Email reset instructions", class: "btn btn-primary" %>
+  <% end %>
+</div>
